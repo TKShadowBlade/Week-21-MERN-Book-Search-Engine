@@ -42,6 +42,16 @@ const revolvers = {
                 return updatedUser;
             }
             throw new new AuthenticationError('Must be logged in');
+        },
+        removeBook: async (parent, { bookId }, context) => {
+            if (context.user) {
+                const updatedUser = await user.findOneAndUpdate(
+                    {_id: context.user._id},
+                    { $pull: { savedBooks: { bookId: bookId } } },
+                    { new: true }
+                )
+                return updatedUser;
+            }
         }
 
     }
