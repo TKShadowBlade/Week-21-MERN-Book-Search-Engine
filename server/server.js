@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const routes = require('./routes');
 // importing ApolloServer here:
 const { ApolloServer } = require('apollo-server-express');
 const {typeDefs, resolvers} = require('./schemas');
@@ -12,11 +13,14 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // accessing ApolloServer here:
+async function startApolloServer(typeDefs, resolvers) {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: authMiddleware
 });
+
+await server.start();
 
 server.applyMiddleware({app});
 
@@ -35,3 +39,6 @@ db.once('open', () => {
   console.log(`🌍 Now listening on localhost:${PORT}`));
   console.log(`GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
 });
+};
+
+startApolloServer(typeDefs, resolvers);
